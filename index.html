@@ -263,42 +263,117 @@
     </section>
 
     <script>
-        // Carrossel do escritório
-        const carouselContainer = document.querySelector('.carousel-container');
-        const carouselSlides = document.querySelectorAll('.carousel-slide');
-        const prevBtn = document.querySelector('.carousel-prev');
-        const nextBtn = document.querySelector('.carousel-next');
-        let currentIndex = 0;
-        const slideWidth = carouselSlides[0].clientWidth;
-        
-        function updateCarousel() {
-            carouselContainer.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
-        }
-        
-        nextBtn.addEventListener('click', () => {
-            currentIndex = (currentIndex + 1) % carouselSlides.length;
-            updateCarousel();
-        });
-        
-        prevBtn.addEventListener('click', () => {
-            currentIndex = (currentIndex - 1 + carouselSlides.length) % carouselSlides.length;
-            updateCarousel();
-        });
-        
-        // Auto-play do carrossel
-        let carouselInterval = setInterval(() => {
-            nextBtn.click();
-        }, 3000);
-        
-        carouselContainer.addEventListener('mouseenter', () => {
-            clearInterval(carouselInterval);
-        });
-        
-        carouselContainer.addEventListener('mouseleave', () => {
-            carouselInterval = setInterval(() => {
-                nextBtn.click();
-            }, 5000);
-        });
+        // Carrossel do escritório - com suporte a touch
+const carouselContainer = document.querySelector('.carousel-container');
+const carouselSlides = document.querySelectorAll('.carousel-slide');
+const prevBtn = document.querySelector('.carousel-prev');
+const nextBtn = document.querySelector('.carousel-next');
+let currentIndex = 0;
+let slideWidth = carouselSlides[0].clientWidth;
+let isDragging = false;
+let startPos = 0;
+let currentTranslate = 0;
+let prevTranslate = 0;
+let animationID;
+
+// Atualiza a largura do slide quando a janela é redimensionada
+window.addEventListener('resize', () => {
+    slideWidth = carouselSlides[0].clientWidth;
+    updateCarousel();
+});
+
+function updateCarousel() {
+    carouselContainer.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+}
+
+function goToNextSlide() {
+    currentIndex = (currentIndex + 1) % carouselSlides.length;
+    updateCarousel();
+    resetAutoPlay();
+}
+
+function goToPrevSlide() {
+    currentIndex = (currentIndex - 1 + carouselSlides.length) % carouselSlides.length;
+    updateCarousel();
+    resetAutoPlay();
+}
+
+nextBtn.addEventListener('click', goToNextSlide);
+prevBtn.addEventListener('click', goToPrevSlide);
+
+// Suporte a touch para mobile
+carouselContainer.addEventListener('touchstart', touchStart);
+carouselContainer.addEventListener('touchend', touchEnd);
+carouselContainer.addEventListener('touchmove', touchMove);
+
+carouselContainer.addEventListener('mousedown', touchStart);
+carouselContainer.addEventListener('mouseup', touchEnd);
+carouselContainer.addEventListener('mouseleave', touchEnd);
+carouselContainer.addEventListener('mousemove', touchMove);
+
+function touchStart(e) {
+    if (e.type === 'mousedown') {
+        e.preventDefault();
+    }
+    isDragging = true;
+    startPos = getPositionX(e);
+    prevTranslate = currentIndex * slideWidth;
+    carouselContainer.style.transition = 'none';
+    clearInterval(carouselInterval);
+}
+
+function touchEnd() {
+    if (!isDragging) return;
+    isDragging = false;
+    const movedBy = currentTranslate - prevTranslate;
+    
+    if (movedBy < -100 && currentIndex < carouselSlides.length - 1) {
+        currentIndex += 1;
+    }
+    
+    if (movedBy > 100 && currentIndex > 0) {
+        currentIndex -= 1;
+    }
+    
+    carouselContainer.style.transition = 'transform 0.5s ease-in-out';
+    updateCarousel();
+    resetAutoPlay();
+}
+
+function touchMove(e) {
+    if (!isDragging) return;
+    const currentPosition = getPositionX(e);
+    currentTranslate = prevTranslate + (currentPosition - startPos);
+    carouselContainer.style.transform = `translateX(-${currentTranslate}px)`;
+}
+
+function getPositionX(e) {
+    return e.type.includes('mouse') ? e.pageX : e.touches[0].clientX;
+}
+
+// Auto-play do carrossel
+let carouselInterval;
+
+function startAutoPlay() {
+    carouselInterval = setInterval(goToNextSlide, 5000);
+}
+
+function resetAutoPlay() {
+    clearInterval(carouselInterval);
+    startAutoPlay();
+}
+
+// Pausar auto-play quando o mouse está sobre o carrossel
+carouselContainer.addEventListener('mouseenter', () => {
+    clearInterval(carouselInterval);
+});
+
+carouselContainer.addEventListener('mouseleave', () => {
+    startAutoPlay();
+});
+
+// Iniciar auto-play
+startAutoPlay();
     </script>
 
     <!-- Mapa -->
@@ -308,6 +383,42 @@
         </div>
     </section>
 
+
+    <!-- ======= SEÇÃO DE AVALIAÇÕES DO GOOGLE ======= -->
+<section id="reviews" class="section reviews-section">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Avaliações dos Nossos Clientes</h2>
+            <p class="section-subtitle">O que dizem sobre nós</p>
+            <div class="section-divider"></div>
+        </div>
+        
+        <!-- Widget do Google (funciona em desktop e mobile) -->
+        <div class="google-reviews-container">
+            <iframe 
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1dChIJV0k2YcdCzpQRBw8_cMEDbK8!2sYour%20Business%20Name!3d-23.0000000!4d-46.0000000&output=embed&hl=pt-BR&showreviews=true" 
+                width="100%" 
+                height="450" 
+                frameborder="0" 
+                style="border:0; border-radius: 8px;" 
+                allowfullscreen 
+                loading="lazy">
+            </iframe>
+        </div>
+        
+        <!-- Botão para ver mais avaliações -->
+        <div class="more-reviews-btn">
+            <a 
+                href="https://search.google.com/local/reviews?placeid=ChIJV0k2YcdCzpQRBw8_cMEDbK8" 
+                target="_blank" 
+                class="btn btn-primary"
+            >
+                Ver todas as avaliações no Google
+                <i class="fas fa-external-link-alt"></i>
+            </a>
+        </div>
+    </div>
+</section>
 
 
     <!-- Footer -->

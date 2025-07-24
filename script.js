@@ -13,6 +13,96 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }, 1500);
+
+    // Carregar avaliações do Google (Opção 2)
+document.addEventListener('DOMContentLoaded', function() {
+    // Substitua pelo seu Place ID do Google Meu Negócio
+    const placeId = 'ChIJV0k2YcdCzpQRBw8_cMEDbK8';
+    const apiKey = 'SUA_API_KEY_AQUI'; // Necessário criar no Google Cloud Console
+    
+    if (placeId && apiKey) {
+        loadGoogleReviews(placeId, apiKey);
+    } else {
+        console.warn('Place ID ou API Key não configurados');
+        document.getElementById('google-reviews').innerHTML = 
+            '<p class="text-center">As avaliações não puderam ser carregadas no momento.</p>';
+    }
+    
+    // Controles do carrossel
+    const prevBtn = document.querySelector('.reviews-prev');
+    const nextBtn = document.querySelector('.reviews-next');
+    const reviewsContainer = document.querySelector('.reviews-container');
+    let currentReview = 0;
+    
+    nextBtn.addEventListener('click', () => {
+        currentReview = (currentReview + 1) % document.querySelectorAll('.review-item').length;
+        scrollToReview(currentReview);
+    });
+    
+    prevBtn.addEventListener('click', () => {
+        currentReview = (currentReview - 1 + document.querySelectorAll('.review-item').length) % 
+                        document.querySelectorAll('.review-item').length;
+        scrollToReview(currentReview);
+    });
+    
+    function scrollToReview(index) {
+        const reviewWidth = document.querySelector('.review-item').clientWidth;
+        reviewsContainer.scrollTo({
+            left: reviewWidth * index,
+            behavior: 'smooth'
+        });
+    }
+});
+
+async function loadGoogleReviews(placeId, apiKey) {
+    try {
+        // Primeiro obtemos os detalhes do lugar para pegar o nome exato
+        const placeDetailsUrl = `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&fields=name,reviews&key=${apiKey}`;
+        
+        const detailsResponse = await fetch(placeDetailsUrl);
+        const detailsData = await detailsResponse.json();
+        
+        if (detailsData.result && detailsData.result.reviews) {
+            const reviews = detailsData.result.reviews;
+            const reviewsContainer = document.getElementById('google-reviews');
+            
+            if (reviews.length > 0) {
+                let reviewsHTML = '';
+                
+                reviews.forEach(review => {
+                    const stars = '★'.repeat(review.rating) + '☆'.repeat(5 - review.rating);
+                    const date = new Date(review.time * 1000).toLocaleDateString();
+                    
+                    reviewsHTML += `
+                        <div class="review-item">
+                            <div class="review-header">
+                                <img src="${review.profile_photo_url || 'https://via.placeholder.com/40'}" 
+                                     alt="${review.author_name}" 
+                                     width="40" 
+                                     height="40" 
+                                     class="review-avatar">
+                                <span class="review-author">${review.author_name}</span>
+                                <span class="review-stars">${stars}</span>
+                            </div>
+                            <div class="review-date">${date}</div>
+                            <div class="review-text">${review.text}</div>
+                        </div>
+                    `;
+                });
+                
+                reviewsContainer.innerHTML = reviewsHTML;
+            } else {
+                reviewsContainer.innerHTML = '<p class="text-center">Nenhuma avaliação encontrada.</p>';
+            }
+        } else {
+            throw new Error('Nenhuma avaliação disponível ou erro na API');
+        }
+    } catch (error) {
+        console.error('Erro ao carregar avaliações:', error);
+        document.getElementById('google-reviews').innerHTML = 
+            '<p class="text-center">As avaliações não puderam ser carregadas no momento.</p>';
+    }
+}
     
     // Cursor personalizado
     const cursor = document.querySelector('.cursor');
