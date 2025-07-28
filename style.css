@@ -656,6 +656,16 @@ img {
     letter-spacing: 1px;
 }
 
+@media (min-width: 768px) {
+    .stat-item-1{
+        display: none;
+    }
+    
+    .stat-item-4{
+        display: none;
+    } 
+}
+
 /* Escritório - Layout geral */
 .office-content {
     display: flex;
