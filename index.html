@@ -71,7 +71,17 @@
         </div>
     </section>
 
-    <!-- Sobre a Advogada -->
+    <!-- Sobre a Advogada 
+    <iframe  
+    src="https://drive.google.com/file/d/1tW7hTpyd6m-psyeYZeIr7uOyjaZ-vFwq/view?usp=sharing"  
+    width="640"  
+    height="480"  
+    allow="autoplay"  
+    frameborder="0"  
+    allowfullscreen  
+    ></iframe> 
+    --> 
+
     <section id="about" class="section about-section">
         <div class="container">
             <div class="section-header">
@@ -397,8 +407,32 @@ startAutoPlay();
             <p class="section-subtitle">O que nossos clientes dizem sobre nós?</p>
             <div class="section-divider"></div>
         </div>
-        <div id="reviews-widget-67"></div>
-        <script src="https://app.reviewconnect.me/embed/lelr5hQ4yVir38rQB6wh4ml35AoNGocr/widget.js" async></script>
+        
+
+        <div class="div-reviews">
+            <div id="reviews-widget-67"></div>
+            <script src="https://app.reviewconnect.me/embed/lelr5hQ4yVir38rQB6wh4ml35AoNGocr/widget.js" async></script>
+        </div>
+        <style>
+            .div-reviews{
+                padding-left:150px; 
+                padding-right: 150px; 
+
+            }
+
+            .div-reviews .reviews-widget__business-phone{
+                color: black;
+
+            }
+
+            @media (max-width: 768px) {
+                .div-reviews{
+                    padding-left: 10px;
+                    padding-right: 10px;
+                }
+            }
+        </style>
+
     </section>
 
     <!-- Mapa -->
