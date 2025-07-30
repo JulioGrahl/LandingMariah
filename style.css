@@ -737,7 +737,7 @@ img {
 }
 
 @media (max-width: 748px){
-    .slide-placeholder img {
+    .slide-placeholder{
         max-width: 375px;
     }
 }
