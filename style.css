@@ -638,7 +638,7 @@ img {
 }
 
 .stat-item {
-    padding: 3rem;
+    padding: 2rem;
 }
 
 .stat-number {
@@ -654,6 +654,24 @@ img {
     font-size: 1.6rem;
     text-transform: uppercase;
     letter-spacing: 1px;
+}
+
+@media (max-width: 900px) {
+    .stat-number{
+        font-size: 30px;
+    }
+
+    .stat-item {
+        padding: 3px;
+    } 
+    
+    .stat-text{
+        font-size: 10px;
+    }
+
+    .stats-grid{
+        height: 50px;
+    }
 }
 
 /* Escritório - Layout geral */
