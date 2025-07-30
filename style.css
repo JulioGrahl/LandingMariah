@@ -673,7 +673,7 @@ img {
         height: 50px;
     }
 }
-/* Escritório - Layout geral */
+/* Escritório  Layout geral */
 .office-content {
     display: flex;
     flex-direction: column; /* Coluna em mobile */
