@@ -736,6 +736,12 @@ img {
     object-fit: cover;
 }
 
+@media (max-width: 748px){
+    .slide-placeholder img {
+        max-width: 375px;
+    }
+}
+
 .slide-caption {
     position: absolute;
     bottom: 0;
