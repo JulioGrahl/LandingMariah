@@ -656,7 +656,6 @@ img {
     letter-spacing: 1px;
 }
 
-<<<<<<< HEAD
 @media (max-width: 900px) {
     .stat-number{
         font-size: 30px;
@@ -673,7 +672,7 @@ img {
     .stats-grid{
         height: 50px;
     }
-
+}
 /* Escritório - Layout geral */
 .office-content {
     display: flex;
